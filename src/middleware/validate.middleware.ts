@@ -1,6 +1,7 @@
 
 import { validationResult } from "express-validator";
 import type { Request, Response, NextFunction } from "express";
+import { customError } from "../utils/customError.js";
 
 const validate = (
   request: Request,
@@ -10,10 +11,7 @@ const validate = (
   const errors = validationResult(request);
 
   if (!errors.isEmpty()) {
-    return response.status(400).json({
-      message: "Validation failed",
-      errors: errors.array(),
-    });
+    return next(customError("validation failed", 400));
   }
 
   next();
