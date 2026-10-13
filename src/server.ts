@@ -1,11 +1,11 @@
 import "dotenv/config";
+import { prisma } from "./utils/prisma.js";
 import { app } from "./app.js";
 
-const PORT = process.env.PORT 
+const PORT = process.env.PORT || 3000;
 
-app.listen(
-  PORT,
-  () => {
-    console.log("server is running");
-  },
-);
+await prisma.$connect();
+
+app.listen(PORT, () => {
+  console.log(`server is running on port ${PORT}`);
+});

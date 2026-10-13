@@ -1,0 +1,123 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  TEACHER
+  ADMIN
+  STUDENT
+}
+
+enum VerificationCodeType {
+  EMAIL_VERIFICATION
+  PASSWORD_RESET
+}
+
+model User {
+  id                String             @id @default(uuid())
+  email             String             @unique
+  password          String
+  emailVerifiedAt   DateTime?
+  userRoles         UserRole[]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  verificationCodes VerificationCode[]
+  profile           Profile?
+}
+
+model UserRole {
+  id     String @id @default(uuid())
+  userId String
+  role   Role
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, role])
+}
+
+model Profile {
+  id        String      @id @default(uuid())
+  firstName String?
+  lastName  String?
+  telegram  String?
+  linkedin  String?
+  github    String?
+  bio       String?
+  address   String?
+  birthDate DateTime?
+  images    UserImage[]
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserImage {
+  id        String  @id @default(uuid())
+  url       String
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model VerificationCode {
+  id        String               @id @default(uuid())
+  codeHash  String
+  type      VerificationCodeType
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime             @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, type])
+}
+
+model PendingRegistration {
+  id          String    @id @default(uuid())
+  email       String    @unique
+  codeHash    String
+  expiresAt   DateTime
+  verifiedAt  DateTime?
+  attempts    Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Course {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  price       Decimal
+  image       String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Category {
+  id   String @id @default(uuid())
+  name String
+}
+
+model News {
+  id        String   @id @default(uuid())
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
