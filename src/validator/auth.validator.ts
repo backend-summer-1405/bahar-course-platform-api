@@ -40,5 +40,30 @@ const setPasswordValidator = [
     .isLength({ min: 8, max: 30 })
     .withMessage("Password must be between 8 and 30 characters"),
 ];
+const loginValidator = [
+  body("email")
+    .trim()
+    .notEmpty()
+    .withMessage("Email is required")
+    .isEmail()
+    .withMessage("Please enter a valid email"),
 
-export { registerValidator, verifyEmailValidator,setPasswordValidator };
+  body("password").notEmpty().withMessage("Password is required"),
+];
+
+const resetPasswordValidator = [
+  ...verifyEmailValidator,
+
+  body("password")
+    .notEmpty()
+    .withMessage("Password is required")
+    .isLength({ min: 8, max: 30 })
+    .withMessage("Password must be between 8 and 30 characters"),
+];
+export {
+  registerValidator,
+  verifyEmailValidator,
+  setPasswordValidator,
+  loginValidator,
+  resetPasswordValidator,
+};

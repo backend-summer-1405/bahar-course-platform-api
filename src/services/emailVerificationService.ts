@@ -2,12 +2,12 @@ import { prisma } from "../utils/prisma.js";
 import { sendEmail } from "../utils/emailService.js";
 import {
   generateVerificationCode,
-  hashVerificationCode,
 } from "../utils/verificationCode.js";
+import { hashPassword } from "../utils/hashPassword.js";
 
 const sendVerificationCode = async (email: string) => {
   const code = generateVerificationCode();
-  const codeHash = await hashVerificationCode(code);
+  const codeHash = await hashPassword(code);
   const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
 
   await prisma.pendingRegistration.upsert({

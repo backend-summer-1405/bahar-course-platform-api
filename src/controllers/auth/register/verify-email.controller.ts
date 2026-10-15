@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { prisma } from "../../../utils/prisma.js";
 import { customError } from "../../../utils/customError.js";
-import { compareVerificationCode } from "../../../utils/verificationCode.js";
+import { comparePassword } from "../../../utils/hashPassword.js";
 
 const verifyEmail = async (
   request: Request,
@@ -30,7 +30,7 @@ const verifyEmail = async (
     return next(customError("Too many verification attempts", 429));
   }
 
-  const isCodeValid = await compareVerificationCode(
+  const isCodeValid = await comparePassword(
     body.code,
     pendingRegistration.codeHash,
   );
