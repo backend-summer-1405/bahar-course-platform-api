@@ -37,10 +37,14 @@ const setPassword = async (
     data: {
       email: body.email,
       password: hashedPassword,
+      emailVerifiedAt: pendingRegistration.verifiedAt,
       userRoles: {
         create: {
           role: "USER",
         },
+      },
+      profile: {
+        create: {},
       },
     },
     include: {
