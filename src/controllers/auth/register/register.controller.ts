@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { prisma } from "../../../utils/prisma.js";
 import { customError } from "../../../utils/customError.js";
-import { sendVerificationCode } from "../../../services/emailVerificationService.js";
+import { sendVerificationCode } from "../../../services/email/emailVerificationService.js";
 
 const register = async (
   request: Request,
