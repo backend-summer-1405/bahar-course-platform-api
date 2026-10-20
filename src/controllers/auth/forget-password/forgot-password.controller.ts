@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { prisma } from "../../../utils/prisma.js";
 import { customError } from "../../../utils/customError.js";
-import { sendPasswordResetCode } from "../../../services/forgotPasswordService.js";
+import { sendPasswordResetCode } from "../../../services/email/forgotPasswordService.js";
 
 const forgetPassword = async (
   request: Request,
