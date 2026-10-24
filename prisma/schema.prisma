@@ -34,6 +34,10 @@ model User {
   updatedAt         DateTime           @updatedAt
   verificationCodes VerificationCode[]
   profile           Profile?
+  courses           Course[]           @relation("CourseTeacher")
+  news              News[]             @relation("NewsAuthor")
+  courseComments    CourseComment[]
+  newsComments      NewsComment[]
 }
 
 model UserRole {
@@ -88,36 +92,75 @@ model VerificationCode {
 }
 
 model PendingRegistration {
-  id          String    @id @default(uuid())
-  email       String    @unique
-  codeHash    String
-  expiresAt   DateTime
-  verifiedAt  DateTime?
-  attempts    Int       @default(0)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id         String    @id @default(uuid())
+  email      String    @unique
+  codeHash   String
+  expiresAt  DateTime
+  verifiedAt DateTime?
+  attempts   Int       @default(0)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
 model Course {
-  id          String   @id @default(uuid())
+  id          String  @id @default(uuid())
   title       String
+  slug        String  @unique
   description String
   price       Decimal
   image       String?
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  isActive    Boolean @default(true)
+
+  teacherId String
+  teacher   User   @relation("CourseTeacher", fields: [teacherId], references: [id])
+
+  categories Category[]
+  comments   CourseComment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Category {
-  id   String @id @default(uuid())
-  name String
+  id      String   @id @default(uuid())
+  name    String   @unique
+  courses Course[]
 }
 
 model News {
+  id      String @id @default(uuid())
+  title   String
+  slug    String @unique
+  content String
+
+  authorId String
+  author   User   @relation("NewsAuthor", fields: [authorId], references: [id])
+
+  comments NewsComment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CourseComment {
   id        String   @id @default(uuid())
-  title     String
   content   String
+  rating    Int?
+  userId    String
+  courseId  String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model NewsComment {
+  id        String   @id @default(uuid())
+  content   String
+  userId    String
+  newsId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  news      News     @relation(fields: [newsId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
