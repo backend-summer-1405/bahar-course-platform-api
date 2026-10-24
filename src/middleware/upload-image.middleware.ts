@@ -2,7 +2,7 @@
 import multer from "multer";
 import { customError } from "../utils/customError.js";
 
-const uploadProfileImageMiddleware = multer({
+const uploadImageMiddleware = multer({
   storage: multer.memoryStorage(),
 
   limits: {
@@ -27,4 +27,4 @@ const uploadProfileImageMiddleware = multer({
   },
 });
 
-export { uploadProfileImageMiddleware };
+export { uploadImageMiddleware };

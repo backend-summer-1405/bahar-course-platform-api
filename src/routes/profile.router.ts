@@ -5,7 +5,7 @@ import { updateProfileValidator } from "../validator/profile.validator.js";
 import { updateProfile } from "../controllers/profile/update-profile.controller.js";
 import { validate } from "../middleware/validate.middleware.js";
 import { uploadProfileImage } from "../controllers/profile/upload-profile-image.controller.js";
-import { uploadProfileImageMiddleware } from "../middleware/upload-profile-image.middleware.js";
+import { uploadProfileImageMiddleware } from "../middleware/upload-image.middleware.js";
 import { deleteProfileImage } from "../controllers/profile/delete-profile-image.controller.js";
 
 const profileRouter = Router();
