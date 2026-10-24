@@ -42,6 +42,32 @@ const removeRole = async (
       return next(customError("User not found", 404));
     }
 
+    // Check whether the user has the requested role.
+    const userRole = await prisma.userRole.findFirst({
+      where: {
+        userId,
+        role: role as (typeof allowedRoles)[number],
+      },
+      select: { id: true },
+    });
+
+    if (!userRole) {
+      return next(customError("User does not have this role", 404));
+    }
+
+    // Prevent removing the last ADMIN.
+    if (role === "ADMIN") {
+      const adminCount = await prisma.userRole.count({
+        where: { role: "ADMIN" },
+      });
+
+      if (adminCount <= 1) {
+        return next(
+          customError("Cannot remove the last ADMIN", 403),
+        );
+      }
+    }
+
     const result = await prisma.userRole.deleteMany({
       where: {
         userId,
