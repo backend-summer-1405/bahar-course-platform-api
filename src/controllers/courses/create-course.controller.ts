@@ -1,13 +1,18 @@
+
 import type { Request, Response, NextFunction } from "express";
+import { unlink } from "node:fs/promises";
 import { prisma } from "../../utils/prisma.js";
 import { customError } from "../../utils/customError.js";
 import { generateUniqueSlug } from "../../utils/slug.js";
+import { uploadCourseImageService } from "../../services/images/upload-course-image.service.js";
 
 const createCourse = async (
   request: Request,
   response: Response,
   next: NextFunction,
 ) => {
+  let filePath: string | undefined;
+
   try {
     const userId = request.user?.userId;
 
@@ -15,15 +20,26 @@ const createCourse = async (
       return next(customError("Please login first", 401));
     }
 
-    const { title, description, price, image, categoryIds } = request.body;
+    const { title, description, price, categoryIds } = request.body;
+
+    let imageUrl: string | null = null;
+
+    if (request.file) {
+      const uploadedImage = await uploadCourseImageService(request.file);
+
+      imageUrl = uploadedImage.imageUrl;
+      filePath = uploadedImage.filePath;
+    }
+
     const slug = await generateUniqueSlug(title);
+
     const course = await prisma.course.create({
       data: {
         title,
         slug,
         description,
         price: String(price),
-        image: image ?? null,
+        image: imageUrl,
         teacherId: userId,
         ...(categoryIds?.length
           ? {
@@ -43,6 +59,10 @@ const createCourse = async (
       course,
     });
   } catch (error) {
+    if (filePath) {
+      await unlink(filePath).catch(() => {});
+    }
+
     next(error);
   }
 };

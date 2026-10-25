@@ -45,4 +45,42 @@ const createCourseValidator = [
     .withMessage("Each category ID must be a valid UUID"),
 ];
 
-export { createCourseValidator };
+
+
+const updateCourseValidator = [
+  body("title")
+    .optional()
+    .trim()
+    .notEmpty()
+    .withMessage("Title cannot be empty"),
+
+  body("description")
+    .optional()
+    .trim()
+    .notEmpty()
+    .withMessage("Description cannot be empty"),
+
+  body("price")
+    .optional()
+    .isFloat({ min: 0 })
+    .withMessage("Price must be a non-negative number")
+    .custom((value) => {
+      if (!/^\d+(\.\d{1,2})?$/.test(String(value))) {
+        throw new Error("Price can have at most 2 decimal places");
+      }
+      return true;
+    }),
+
+  body("categoryIds")
+    .optional()
+    .isArray()
+    .withMessage("Category IDs must be an array"),
+
+  body("categoryIds.*")
+    .optional()
+    .isUUID()
+    .withMessage("Each category ID must be a valid UUID"),
+];
+
+
+export { createCourseValidator,updateCourseValidator };
