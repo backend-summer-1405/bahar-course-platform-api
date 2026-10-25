@@ -5,8 +5,8 @@ import { updateProfileValidator } from "../validator/profile.validator.js";
 import { updateProfile } from "../controllers/profile/update-profile.controller.js";
 import { validate } from "../middleware/validate.middleware.js";
 import { uploadProfileImage } from "../controllers/profile/upload-profile-image.controller.js";
-import { uploadProfileImageMiddleware } from "../middleware/upload-image.middleware.js";
 import { deleteProfileImage } from "../controllers/profile/delete-profile-image.controller.js";
+import { uploadImageMiddleware } from "../middleware/upload-image.middleware.js";
 
 const profileRouter = Router();
 
@@ -22,7 +22,7 @@ profileRouter.patch(
 profileRouter.post(
   "/me/images",
   checkAuthentication,
-  uploadProfileImageMiddleware.single("image"),
+  uploadImageMiddleware.single("image"),
   uploadProfileImage,
 );
 
