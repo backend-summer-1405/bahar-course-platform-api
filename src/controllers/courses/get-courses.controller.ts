@@ -1,4 +1,3 @@
-
 import type { Request, Response, NextFunction } from "express";
 import { prisma } from "../../utils/prisma.js";
 import { getPagination } from "../../utils/pagination.js";
@@ -90,9 +89,7 @@ const getCourses = async (
         : "createdAt";
 
     const order =
-      typeof request.query.order === "string"
-        ? request.query.order
-        : "desc";
+      typeof request.query.order === "string" ? request.query.order : "desc";
 
     if (!["createdAt", "price", "rating"].includes(sortBy)) {
       return response.status(400).json({
@@ -150,6 +147,12 @@ const getCourses = async (
               rating: true,
             },
           },
+          reactions: {
+            select: {
+              type: true,
+              userId: true,
+            },
+          },
         },
         orderBy: {
           [sortBy === "rating" ? "createdAt" : sortBy]: order,
@@ -159,13 +162,29 @@ const getCourses = async (
     ]);
 
     const coursesWithRatings = courses.map((course) => {
-      const { ratings, ...courseData } = course;
+  const { ratings, reactions, ...courseData } = course;
 
-      return {
-        ...courseData,
-        ...calculateRating(ratings),
-      };
-    });
+  const likesCount = reactions.filter(
+    (reaction) => reaction.type === "LIKE",
+  ).length;
+
+  const dislikesCount = reactions.filter(
+    (reaction) => reaction.type === "DISLIKE",
+  ).length;
+
+  const userReaction =
+    reactions.find(
+      (reaction) => reaction.userId === request.user?.userId,
+    )?.type ?? null;
+
+  return {
+    ...courseData,
+    ...calculateRating(ratings),
+    likesCount,
+    dislikesCount,
+    userReaction,
+  };
+});
 
     return response.status(200).json({
       page,

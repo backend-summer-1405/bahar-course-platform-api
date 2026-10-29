@@ -1,6 +1,6 @@
 
 import { Router } from "express";
-import { checkAuthentication } from "../middleware/checkAuthentication.middleware.js";
+import { checkAuthentication, optionalAuthentication } from "../middleware/checkAuthentication.middleware.js";
 import { checkAuthorization } from "../middleware/checkAuthorization.middleware.js";
 import { validate } from "../middleware/validate.middleware.js";
 import { createCourseValidator, updateCourseValidator } from "../validator/course.validator.js";
@@ -11,10 +11,14 @@ import { deleteCourse } from "../controllers/courses/delete-course.controller.js
 import { getCourses } from "../controllers/courses/get-courses.controller.js";
 import { ratingValidator } from "../validator/rating.validator.js";
 import { rateCourse } from "../controllers/rating/rate.controller.js";
+import { reactToCourse } from "../controllers/reactions/reaction.controller.js";
 
 const courseRouter = Router();
-
-courseRouter.get("/", getCourses);
+courseRouter.get(
+  "/",
+  optionalAuthentication,
+  getCourses,
+);
 
 courseRouter.post(
   "/",
@@ -48,5 +52,12 @@ courseRouter.put(
   ratingValidator,
   validate,
   rateCourse,
+);
+
+// reaction route
+courseRouter.put(
+  "/:courseId/reaction",
+  checkAuthentication,
+  reactToCourse,
 );
 export { courseRouter };
