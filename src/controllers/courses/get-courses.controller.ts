@@ -1,6 +1,8 @@
+
 import type { Request, Response, NextFunction } from "express";
 import { prisma } from "../../utils/prisma.js";
 import { getPagination } from "../../utils/pagination.js";
+import { calculateRating } from "../../utils/rating.js";
 
 const getCourses = async (
   request: Request,
@@ -27,6 +29,7 @@ const getCourses = async (
       typeof request.query.teacherId === "string"
         ? request.query.teacherId.trim()
         : "";
+
     const courseType =
       typeof request.query.courseType === "string"
         ? request.query.courseType
@@ -37,6 +40,7 @@ const getCourses = async (
         message: "courseType must be either free or paid",
       });
     }
+
     const minPrice =
       typeof request.query.minPrice === "string" &&
       request.query.minPrice.trim() !== ""
@@ -68,6 +72,7 @@ const getCourses = async (
         message: "minPrice cannot be greater than maxPrice",
       });
     }
+
     const status =
       typeof request.query.status === "string"
         ? request.query.status
@@ -78,19 +83,22 @@ const getCourses = async (
         message: "status must be either active or inactive",
       });
     }
+
     const sortBy =
       typeof request.query.sortBy === "string"
         ? request.query.sortBy
         : "createdAt";
 
     const order =
-      typeof request.query.order === "string" ? request.query.order : "desc";
+      typeof request.query.order === "string"
+        ? request.query.order
+        : "desc";
 
-   if (!["createdAt", "price", "rating"].includes(sortBy)) {
-  return response.status(400).json({
-    message: "sortBy must be createdAt, price or rating",
-  });
-}
+    if (!["createdAt", "price", "rating"].includes(sortBy)) {
+      return response.status(400).json({
+        message: "sortBy must be createdAt, price or rating",
+      });
+    }
 
     if (!["asc", "desc"].includes(order)) {
       return response.status(400).json({
@@ -114,9 +122,7 @@ const getCourses = async (
           },
         },
       }),
-      ...(teacherId && {
-        teacherId,
-      }),
+      ...(teacherId && { teacherId }),
       ...((minPrice !== undefined ||
         maxPrice !== undefined ||
         courseType !== undefined) && {
@@ -139,22 +145,34 @@ const getCourses = async (
         take,
         include: {
           categories: true,
+          ratings: {
+            select: {
+              rating: true,
+            },
+          },
         },
         orderBy: {
-          [sortBy]: order,
+          [sortBy === "rating" ? "createdAt" : sortBy]: order,
         },
       }),
-      prisma.course.count({
-        where,
-      }),
+      prisma.course.count({ where }),
     ]);
+
+    const coursesWithRatings = courses.map((course) => {
+      const { ratings, ...courseData } = course;
+
+      return {
+        ...courseData,
+        ...calculateRating(ratings),
+      };
+    });
 
     return response.status(200).json({
       page,
       limit,
       total,
       totalPages: Math.ceil(total / limit),
-      courses,
+      courses: coursesWithRatings,
     });
   } catch (error) {
     return next(error);

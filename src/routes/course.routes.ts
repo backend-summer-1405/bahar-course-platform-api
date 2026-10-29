@@ -9,6 +9,8 @@ import { uploadImageMiddleware } from "../middleware/upload-image.middleware.js"
 import { updateCourse } from "../controllers/courses/update-course.controller.js";
 import { deleteCourse } from "../controllers/courses/delete-course.controller.js";
 import { getCourses } from "../controllers/courses/get-courses.controller.js";
+import { ratingValidator } from "../validator/rating.validator.js";
+import { rateCourse } from "../controllers/rating/rate.controller.js";
 
 const courseRouter = Router();
 
@@ -39,4 +41,12 @@ courseRouter.delete(
   deleteCourse,
 );
 
+// rate route
+courseRouter.put(
+  "/:courseId/rating",
+  checkAuthentication,
+  ratingValidator,
+  validate,
+  rateCourse,
+);
 export { courseRouter };
