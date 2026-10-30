@@ -12,12 +12,22 @@ import { getCourses } from "../controllers/courses/get-courses.controller.js";
 import { ratingValidator } from "../validator/rating.validator.js";
 import { rateCourse } from "../controllers/rating/rate.controller.js";
 import { reactToCourse } from "../controllers/reactions/reaction.controller.js";
+import { commentValidator } from "../validator/comment.validator.js";
+import { createComment } from "../controllers/courses/comment/createComment.js";
+import { getComments } from "../controllers/courses/comment/get-comments.controller.js";
+import { getCourseDetails } from "../controllers/courses/get-course-details.controller.js";
 
 const courseRouter = Router();
 courseRouter.get(
   "/",
   optionalAuthentication,
   getCourses,
+);
+
+courseRouter.get(
+  "/:slug",
+  optionalAuthentication,
+  getCourseDetails,
 );
 
 courseRouter.post(
@@ -59,5 +69,20 @@ courseRouter.put(
   "/:courseId/reaction",
   checkAuthentication,
   reactToCourse,
+);
+
+// comments route
+courseRouter.post(
+  "/:courseId/comments",
+  checkAuthentication,
+  commentValidator,
+  validate,
+  createComment,
+);
+
+courseRouter.get(
+  "/:courseId/comments",
+  optionalAuthentication,
+  getComments,
 );
 export { courseRouter };

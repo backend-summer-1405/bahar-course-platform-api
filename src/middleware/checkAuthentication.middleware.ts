@@ -1,4 +1,3 @@
-
 import type { Request, Response, NextFunction } from "express";
 import { checkJwtToken } from "../utils/jwtHelper.js";
 import { customError } from "../utils/customError.js";
@@ -42,7 +41,6 @@ const optionalAuthentication = (
 ) => {
   const authorization = request.headers.authorization;
 
-  // کاربر وارد نشده؛ اجازه ادامه درخواست را بده
   if (!authorization) {
     return next();
   }
@@ -73,5 +71,3 @@ const optionalAuthentication = (
 };
 
 export { checkAuthentication, optionalAuthentication };
-
-
