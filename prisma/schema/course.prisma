@@ -1,0 +1,20 @@
+model Course {
+  id          String  @id @default(uuid())
+  title       String
+  slug        String  @unique
+  description String
+  price       Decimal
+  image       String?
+  isActive    Boolean @default(true)
+
+  teacherId String
+  teacher   User   @relation("CourseTeacher", fields: [teacherId], references: [id])
+
+  categories Category[]
+  comments   CourseComment[]
+  ratings    CourseRating[]
+  reactions  CourseReaction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

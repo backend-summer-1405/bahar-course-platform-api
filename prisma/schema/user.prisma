@@ -1,0 +1,59 @@
+model User {
+  id              String     @id @default(uuid())
+  email           String     @unique
+  password        String
+  emailVerifiedAt DateTime?
+  userRoles       UserRole[]
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  verificationCodes VerificationCode[]
+  profile           Profile?
+  courses           Course[] @relation("CourseTeacher")
+  news              News[]   @relation("NewsAuthor")
+
+  courseRatings     CourseRating[]
+  courseReactions   CourseReaction[]
+  courseComments    CourseComment[]
+  newsComments      NewsComment[]
+
+  courseCommentReactions CourseCommentReaction[]
+  newsCommentReactions   NewsCommentReaction[]
+
+  newsRatings   NewsRating[]
+  newsReactions NewsReaction[]
+}
+
+model UserRole {
+  id     String @id @default(uuid())
+  userId String
+  role   Role
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, role])
+}
+
+model VerificationCode {
+  id        String               @id @default(uuid())
+  codeHash  String
+  type      VerificationCodeType
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime             @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, type])
+}
+
+model PendingRegistration {
+  id         String    @id @default(uuid())
+  email      String    @unique
+  codeHash   String
+  expiresAt  DateTime
+  verifiedAt DateTime?
+  attempts   Int       @default(0)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}

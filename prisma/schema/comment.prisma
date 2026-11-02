@@ -1,0 +1,28 @@
+model CourseComment {
+  id       String @id @default(uuid())
+  content  String
+  userId   String
+  courseId String
+
+  user      User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course    Course                  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  reactions CourseCommentReaction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model NewsComment {
+  id      String @id @default(uuid())
+  content String
+  userId  String
+  newsId  String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  news News @relation(fields: [newsId], references: [id], onDelete: Cascade)
+
+  reactions NewsCommentReaction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

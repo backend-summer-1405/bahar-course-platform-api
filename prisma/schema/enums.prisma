@@ -1,0 +1,16 @@
+enum Role {
+  USER
+  TEACHER
+  ADMIN
+  STUDENT
+}
+
+enum VerificationCodeType {
+  EMAIL_VERIFICATION
+  PASSWORD_RESET
+}
+
+enum ReactionType {
+  LIKE
+  DISLIKE
+}
