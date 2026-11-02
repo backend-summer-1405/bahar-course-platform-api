@@ -16,6 +16,8 @@ import { commentValidator } from "../validator/comment.validator.js";
 import { createComment } from "../controllers/courses/comment/createComment.js";
 import { getComments } from "../controllers/courses/comment/get-comments.controller.js";
 import { getCourseDetails } from "../controllers/courses/get-course-details.controller.js";
+import { updateComment } from "../controllers/courses/comment/update-comment.controller.js";
+import { deleteComment } from "../controllers/courses/comment/delete-comment.controller.js";
 
 const courseRouter = Router();
 courseRouter.get(
@@ -25,7 +27,7 @@ courseRouter.get(
 );
 
 courseRouter.get(
-  "/:slug",
+  "/:courseId",
   optionalAuthentication,
   getCourseDetails,
 );
@@ -84,5 +86,18 @@ courseRouter.get(
   "/:courseId/comments",
   optionalAuthentication,
   getComments,
+);
+courseRouter.patch(
+  "/:courseId/comments/:commentId",
+  checkAuthentication,
+  commentValidator,
+  validate,
+  updateComment,
+);
+
+courseRouter.delete(
+  "/:courseId/comments/:commentId",
+  checkAuthentication,
+  deleteComment,
 );
 export { courseRouter };

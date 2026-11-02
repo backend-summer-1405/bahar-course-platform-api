@@ -8,14 +8,14 @@ const getCourseDetails = async (
   next: NextFunction,
 ) => {
   try {
-    const slug = request.params.slug;
+   const courseId = request.params.courseId;
 
-    if (typeof slug !== "string") {
-      return next(customError("Invalid course slug", 400));
-    }
+  if (typeof courseId !== "string") {
+  return next(customError("Invalid course ID", 400));
+}
 
     const course = await prisma.course.findUnique({
-      where: { slug },
+     where: { id: courseId },
       include: {
         teacher: {
           select: {
