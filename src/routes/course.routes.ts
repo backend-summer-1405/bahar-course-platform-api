@@ -10,8 +10,8 @@ import { updateCourse } from "../controllers/courses/update-course.controller.js
 import { deleteCourse } from "../controllers/courses/delete-course.controller.js";
 import { getCourses } from "../controllers/courses/get-courses.controller.js";
 import { ratingValidator } from "../validator/rating.validator.js";
-import { rateCourse } from "../controllers/rating/rate.controller.js";
-import { reactToCourse } from "../controllers/reactions/reaction.controller.js";
+import { rateCourse } from "../controllers/rating/rate-course.controller.js";
+import { reactToCourse } from "../controllers/reactions/reaction-course.controller.js";
 import { commentValidator } from "../validator/comment.validator.js";
 import { createComment } from "../controllers/courses/comment/createComment.js";
 import { getComments } from "../controllers/courses/comment/get-comments.controller.js";
