@@ -1,7 +1,7 @@
-import { sendEmail } from "../utils/emailService.js";
-import { hashPassword } from "../utils/hashPassword.js";
-import { prisma } from "../utils/prisma.js";
-import { generateVerificationCode } from "../utils/verificationCode.js";
+import { sendEmail } from "../../utils/emailService.js";
+import { hashPassword } from "../../utils/hashPassword.js";
+import { prisma } from "../../utils/prisma.js";
+import { generateVerificationCode } from "../../utils/verificationCode.js";
 
 const sendPasswordResetCode = async (email: string) => {
   const user = await prisma.user.findUnique({

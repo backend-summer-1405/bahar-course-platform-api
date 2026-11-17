@@ -1,0 +1,59 @@
+model CourseReaction {
+  id       String       @id @default(uuid())
+  type     ReactionType
+  userId   String
+  courseId String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, courseId])
+}
+
+model NewsReaction {
+  id     String       @id @default(uuid())
+  type   ReactionType
+  userId String
+  newsId String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  news News @relation(fields: [newsId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, newsId])
+}
+
+model CourseCommentReaction {
+  id        String       @id @default(uuid())
+  type      ReactionType
+  userId    String
+  commentId String
+
+  user    User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comment CourseComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, commentId])
+}
+
+model NewsCommentReaction {
+  id        String       @id @default(uuid())
+  type      ReactionType
+  userId    String
+  commentId String
+
+  user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comment NewsComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, commentId])
+}

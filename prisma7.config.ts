@@ -1,3 +1,4 @@
+
 import "dotenv/config";
 import { defineConfig } from "prisma/config";
 
@@ -8,7 +9,7 @@ if (!DATABASE_URL) {
 }
 
 export default defineConfig({
-  schema: "prisma/schema.prisma",
+  schema: "prisma/schema",
   migrations: {
     path: "prisma/migrations",
   },
