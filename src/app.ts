@@ -5,6 +5,7 @@ import { profileRouter } from "./routes/profile.router.js";
 import path from "node:path";
 import { adminRouter } from "./routes/admin.router.js";
 import { courseRouter } from "./routes/course.routes.js";
+import { newsRouter } from "./routes/news.routes.js";
 
 const app = express()
 
@@ -19,5 +20,6 @@ app.use("/api/auth", authRouter);
 app.use("/api/profile", profileRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/courses", courseRouter);
+app.use("/api/news", newsRouter);
 app.use(errorMiddleware);
 export  {app}
