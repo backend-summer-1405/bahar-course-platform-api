@@ -21,4 +21,17 @@ const generateUniqueSlug = async (title: string): Promise<string> => {
   return slug;
 };
 
-export { generateSlug, generateUniqueSlug };
+const generateUniqueNewsSlug = async (title: string): Promise<string> => {
+  const baseSlug = generateSlug(title);
+  let slug = baseSlug;
+  let counter = 2;
+
+  while (await prisma.news.findUnique({ where: { slug } })) {
+    slug = `${baseSlug}-${counter}`;
+    counter++;
+  }
+
+  return slug;
+};
+
+export { generateSlug, generateUniqueSlug, generateUniqueNewsSlug };
