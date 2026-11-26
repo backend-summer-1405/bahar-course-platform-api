@@ -94,3 +94,36 @@ export const updateCategory = async (
     next(error);
   }
 };
+
+export const deleteCategory = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const categoryId = req.params.categoryId;
+
+    if (typeof categoryId !== "string") {
+      return next(customError("Invalid category ID", 400));
+    }
+
+    const existingCategory = await prisma.category.findUnique({
+      where: { id: categoryId },
+    });
+
+    if (!existingCategory) {
+      return next(customError("Category not found", 404));
+    }
+
+    await prisma.category.delete({
+      where: { id: categoryId },
+    });
+
+    return res.status(200).json({
+      message: "Category deleted successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
