@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { createCategoryValidator } from "../validator/category.validator.js";
-import { createCategory } from "../controllers/category/category.controller.js";
+import { createCategoryValidator, updateCategoryValidator } from "../validator/category.validator.js";
+import { createCategory, getAllCategories, updateCategory } from "../controllers/category/category.controller.js";
 import { validate } from "../middleware/validate.middleware.js";
 import { checkAuthorization } from "../middleware/checkAuthorization.middleware.js";
 import { checkAuthentication } from "../middleware/checkAuthentication.middleware.js";
@@ -17,4 +17,14 @@ categoryRoutes.post(
   createCategory,
 );
 
+categoryRoutes.get("/", getAllCategories);
+
+categoryRoutes.patch(
+  "/:categoryId",
+  checkAuthentication,
+  checkAuthorization("ADMIN"),
+  updateCategoryValidator,
+  validate,
+  updateCategory,
+);
 export default categoryRoutes;
