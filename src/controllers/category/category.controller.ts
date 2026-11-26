@@ -31,3 +31,25 @@ export const createCategory = async (
     next(error);
   }
 };
+
+
+export const getAllCategories = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const categories = await prisma.category.findMany({
+      orderBy: {
+        name: "asc",
+      },
+    });
+
+    return res.status(200).json({
+      message: "Categories retrieved successfully",
+      categories,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
