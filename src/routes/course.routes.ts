@@ -18,7 +18,7 @@ import { getComments } from "../controllers/courses/comment/get-comments.control
 import { getCourseDetails } from "../controllers/courses/get-course-details.controller.js";
 import { updateComment } from "../controllers/courses/comment/update-comment.controller.js";
 import { deleteComment } from "../controllers/courses/comment/delete-comment.controller.js";
-import { createReservation } from "../controllers/courses/reservation.controller.js";
+import { createReservation, getMyReservations } from "../controllers/reservations/reservation.controller.js";
 
 const courseRouter = Router();
 courseRouter.get(
@@ -102,9 +102,5 @@ courseRouter.delete(
   deleteComment,
 );
 
-courseRouter.post(
-  "/:courseId/reservations",
-  checkAuthentication,
-  createReservation
-);
+
 export { courseRouter };
