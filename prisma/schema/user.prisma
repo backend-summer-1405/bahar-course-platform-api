@@ -22,6 +22,9 @@ model User {
 
   newsRatings   NewsRating[]
   newsReactions NewsReaction[]
+
+  courseReservations  CourseReservation[] @relation("ReservationUser")
+reviewedReservations CourseReservation[] @relation("ReservationReviewer")
 }
 
 model UserRole {

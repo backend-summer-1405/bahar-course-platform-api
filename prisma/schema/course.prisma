@@ -1,3 +1,12 @@
+enum ReservationStatus {
+  PENDING
+  AWAITING_PAYMENT
+  REJECTED
+  PAID
+  EXPIRED
+  CANCELLED
+}
+
 model Course {
   id          String  @id @default(uuid())
   title       String
@@ -10,11 +19,38 @@ model Course {
   teacherId String
   teacher   User   @relation("CourseTeacher", fields: [teacherId], references: [id])
 
-  categories Category[]
-  comments   CourseComment[]
-  ratings    CourseRating[]
-  reactions  CourseReaction[]
+  categories   Category[]
+  comments     CourseComment[]
+  ratings      CourseRating[]
+  reactions    CourseReaction[]
+  reservations CourseReservation[]
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+}
+
+model CourseReservation {
+  id     String  @id @default(uuid())
+  amount Decimal
+
+  status ReservationStatus @default(PENDING)
+
+  paymentDeadline DateTime?
+
+  reviewedAt      DateTime?
+  rejectionReason String?
+
+  userId String
+  user   User   @relation("ReservationUser", fields: [userId], references: [id], onDelete: Restrict)
+
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Restrict)
+
+  reviewedById String?
+  reviewedBy   User?   @relation("ReservationReviewer", fields: [reviewedById], references: [id], onDelete: Restrict)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId, status])
+  @@index([courseId, status])
 }
